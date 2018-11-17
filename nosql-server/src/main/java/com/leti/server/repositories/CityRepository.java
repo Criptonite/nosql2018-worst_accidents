@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CityRepository extends MongoRepository<City, String> {
     City findCityByName(String name);
+
+    City findCityById(String id);
 }

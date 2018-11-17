@@ -7,7 +7,6 @@ import { MapComponent } from './map-component/map.component';
 import {FormsModule} from '@angular/forms';
 import {MapService} from './map.service';
 import {
-  ButtonModule,
   CheckboxModule,
   CodeHighlighterModule,
   DialogModule,
@@ -26,7 +25,6 @@ import {ToastModule} from 'primeng/toast';
     InputTextModule,
     CheckboxModule,
     DialogModule,
-    ButtonModule,
     TabViewModule,
     CodeHighlighterModule
   ],

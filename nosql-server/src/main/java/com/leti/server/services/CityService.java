@@ -29,6 +29,10 @@ public class CityService {
         return cityRepository.findCityByName(name);
     }
 
+    public City getById(String id){
+        return cityRepository.findCityById(id);
+    }
+
     public void remove(City city) {
         cityRepository.delete(city);
     }

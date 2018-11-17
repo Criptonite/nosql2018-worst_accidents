@@ -29,17 +29,12 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     this.options = {
       center: {lat: 36.890257, lng: 30.707417},
-      zoom: 12
+      zoom: 5
     };
 
     this.initOverlays();
 
     this.infoWindow = new google.maps.InfoWindow();
-  }
-
-  handleMapClick(event) {
-    this.dialogVisible = true;
-    this.selectedPosition = event.latLng;
   }
 
   handleOverlayClick(event) {
@@ -57,14 +52,18 @@ export class MapComponent implements OnInit {
     }
   }
 
-  addMarker() {
-    this.overlays.push(new google.maps.Marker({position: {lat: this.selectedPosition.lat(), lng: this.selectedPosition.lng()}, title: this.markerTitle, draggable: this.draggable}));
+  addMarker(lat, lng, title?) {
+    this.overlays.push(
+      new google.maps.Marker({
+          position: {
+              lat: lat,
+              lng: lng
+          },
+          title: title,
+          draggable: false
+      }));
     this.markerTitle = null;
     this.dialogVisible = false;
-  }
-
-  handleDragEnd(event) {
-    this.messageService.add({severity: 'info', summary: 'Marker Dragged', detail: event.overlay.getTitle()});
   }
 
   initOverlays() {

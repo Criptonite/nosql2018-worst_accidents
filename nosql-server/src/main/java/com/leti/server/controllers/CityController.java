@@ -15,6 +15,7 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController()
+@RequestMapping("/city")
 public class CityController {
 
     private CityService cityService;
@@ -29,20 +30,21 @@ public class CityController {
         return cityService.getAll();
     }
 
-    @RequestMapping(method = GET, value = "/city")
+    @RequestMapping(method = GET)
     public City get(@RequestParam(value = "name") String name) {
         return cityService.getByName(name);
     }
 
-    @RequestMapping(method = POST, value = "/add")
+    @RequestMapping(method = POST)
     public ResponseEntity<?> add(@RequestBody City city){
         City saved = cityService.save(city);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = DELETE, value = "/remove")
-    public ResponseEntity<?>remove(@RequestBody City city){
-        cityService.remove(city);
-        return new ResponseEntity<>(city, HttpStatus.OK);
+    @RequestMapping(method = DELETE)
+    public ResponseEntity<?>remove(@RequestParam(value = "id") String id){
+        City removingCity = cityService.getById(id);
+        cityService.remove(removingCity);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -26,8 +26,7 @@ import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
     DropdownModule,
     FormsModule,
     SpinnerModule,
-    ButtonModule,
-    TriStateCheckboxModule
+    ButtonModule
   ],
   providers: [
     ApiService

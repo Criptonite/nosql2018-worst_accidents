@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from './api.service';
+import {Type} from './models/accident-type';
+import {Region} from './models/region';
+import {MapService} from './modules/map-module/map.service';
 
 @Component({
   selector: 'app-root',
@@ -8,36 +11,35 @@ import {ApiService} from './api.service';
 })
 export class AppComponent implements OnInit {
 
-  selectedCity: string;
+  types: Type[];
+  regions: Region [];
+  selectedType: Type;
+  selectedRegion: Region;
   year: number;
-  hasPedestrian: any;
-  readonly cities = [
-    {label: 'Saint-Petersburg', value: 'Saint-Petersburg'},
-    {label: 'Moscow', value: 'Moscow'},
-    {label: 'Ivanovo', value: 'Ivanovo'},
-    {label: 'Tomsk', value: 'Tomsk'},
-    {label: 'Novosibirsk', value: 'Novosibirsk'},
-    {label: 'Simferopol', value: 'Simferopol'},
-    {label: 'Vladivostok', value: 'Vladivostok'}
-  ];
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private mapService: MapService) {
   }
 
   ngOnInit() {
-    this.selectedCity = null;
+    this.selectedRegion = null;
     this.year = 2018;
-    // this.apiService.getAllCities().subscribe(res => {
-    //   console.log(res);
-    // const city = new City('id', 'Spb', new MapLocation(123, 321), 1000);
-    // this.cities.push(city);
-    // });
+    this.getRegions();
+    this.getType();
+  }
+
+  getRegions(): void {
+    this.apiService.getAllRegions().subscribe(regions => this.regions = regions);
+  }
+
+  getType(): void {
+    this.apiService.getAllTypes().subscribe(types => this.types = types);
   }
 
   getAccidents(): void {
-    this.apiService.getAccidents(this.selectedCity, this.year, this.hasPedestrian !== undefined ? this.hasPedestrian : null)
+    this.apiService.getAccidents(this.selectedRegion.name, this.year, this.selectedType ? this.selectedType.typeName : null)
       .subscribe(accidents => {
         console.log(accidents);
+        this.mapService.setAccident(accidents);
       });
   }
 }

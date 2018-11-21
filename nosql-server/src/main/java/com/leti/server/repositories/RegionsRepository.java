@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RegionsRepository extends MongoRepository<Region, String> {
+    boolean existsByName(String region);
 }

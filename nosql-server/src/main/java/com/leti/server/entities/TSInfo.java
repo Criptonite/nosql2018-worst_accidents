@@ -1,22 +1,33 @@
 package com.leti.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TSInfo {
-    String tsId;
+    @Field("type")
+    @JsonProperty("type")
     String type;
-    String marka;
+    @Field("marka")
+    @JsonProperty("marka")
+    String mark;
+    @Field("model")
+    @JsonProperty("model")
     String model;
-    int g_v;
+    @Field("g_v")
+    @JsonProperty("g_v")
+    int yearOfIssue;
+    @Field("color")
+    @JsonProperty("color")
     String color;
+    @Field("uch_info")
+    @JsonProperty("uch_info")
     List<UchInfo> uchInfo;
 }

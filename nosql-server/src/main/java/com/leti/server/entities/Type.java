@@ -1,14 +1,12 @@
 package com.leti.server.entities;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "types")
@@ -16,4 +14,8 @@ public class Type {
     @Id
     String id;
     String typeName;
+
+    public Type(String type) {
+        this.typeName = type;
+    }
 }

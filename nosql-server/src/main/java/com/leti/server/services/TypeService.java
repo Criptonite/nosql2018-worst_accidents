@@ -20,4 +20,12 @@ public class TypeService {
     public List<Type> getAll(){
         return typesRepository.findAll();
     }
+
+    public Type addType(Type type) {
+        return typesRepository.insert(type);
+    }
+
+    public boolean isTypeExists(String type) {
+        return typesRepository.existsByTypeName(type);
+    }
 }

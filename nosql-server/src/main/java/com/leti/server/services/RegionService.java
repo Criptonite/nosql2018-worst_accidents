@@ -20,4 +20,12 @@ public class RegionService {
     public List<Region> getAll(){
         return regionsRepository.findAll();
     }
+
+    public Region addRegion(Region region) {
+        return regionsRepository.insert(region);
+    }
+
+    public boolean isRegionExists(String region) {
+        return regionsRepository.existsByName(region);
+    }
 }

@@ -1,20 +1,23 @@
 package com.leti.server.entities;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "regions")
 public class Region {
     @Id
     String id;
-    int code;
+    String code;
     String name;
+
+    public Region(String code, String region) {
+        this.code = code;
+        this.name = region;
+    }
 }

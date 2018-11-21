@@ -53,6 +53,8 @@ export class MapComponent implements OnInit {
           data.forEach(accident => this.handleAccident(accident));
           const lastAccident = data[data.length - 1];
           this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
+        } else {
+          this.messageService.add({severity: 'info', summary: 'Нет происшествий для выбраных параметров'});
         }
       }
     });
@@ -75,18 +77,10 @@ export class MapComponent implements OnInit {
   }
 
   handleOverlayClick(event) {
-    const isMarker = event.overlay.getTitle !== undefined;
-
-    if (isMarker) {
       const title = event.overlay.getTitle();
       this.selectAccidentById(event.overlay.getTitle());
       event.map.setCenter(event.overlay.getPosition());
       this.shortInfoDialog = true;
-
-      this.messageService.add({severity: 'info', summary: 'Marker Selected', detail: title});
-    } else {
-      this.messageService.add({severity: 'info', summary: 'Shape Selected', detail: ''});
-    }
   }
 
   selectAccidentById (id: string): void {

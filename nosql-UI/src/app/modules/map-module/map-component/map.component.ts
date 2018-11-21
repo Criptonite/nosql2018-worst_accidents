@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MessageService} from 'primeng/api';
+import {MapService} from '../map.service';
+import {Accident} from '../../../models/accident';
 
 declare var google: any;
 
@@ -24,7 +26,9 @@ export class MapComponent implements OnInit {
 
   draggable: boolean;
 
-  constructor(private messageService: MessageService) {}
+  private mapServiceSubscription: any;
+
+  constructor(private messageService: MessageService, private mapService: MapService) {}
 
   ngOnInit() {
     this.options = {
@@ -35,6 +39,13 @@ export class MapComponent implements OnInit {
     this.initOverlays();
 
     this.infoWindow = new google.maps.InfoWindow();
+    this.mapServiceSubscription = this.mapService.subscribe(data => {
+      data.forEach(accident => this.handleAccident(accident));
+    });
+  }
+
+  handleAccident(accident: Accident) {
+    this.addMarker(accident.dtpInfo.latitude, accident.dtpInfo.longitude, accident.kartId);
   }
 
   handleOverlayClick(event) {

@@ -1,11 +1,14 @@
 import {DtpInfo} from './dtp-info';
 
 export class Accident {
-  kartId: string;
+  KartId: string;
+  date: string;
   time: string;
+  code: string;
+  name: string;
   district: string;
   type: string;
-  tsCount: number;
-  uchCount: number;
-  dtpInfo: DtpInfo;
+  ts_count: number;
+  uch_count: number;
+  dtp_info: DtpInfo;
 }

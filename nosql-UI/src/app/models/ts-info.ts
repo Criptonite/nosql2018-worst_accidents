@@ -7,5 +7,5 @@ export class TsInfo {
   model: string;
   g_v: number;
   color: string;
-  uchInfo: UchInfo [];
+  uch_info: UchInfo [];
 }

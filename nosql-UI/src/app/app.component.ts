@@ -28,7 +28,12 @@ export class AppComponent implements OnInit {
   }
 
   getRegions(): void {
-    this.apiService.getAllRegions().subscribe(regions => this.regions = regions);
+    this.apiService.getAllRegions().subscribe(regions => {
+      this.regions = regions;
+      if (this.regions && this.regions.length) {
+        this.selectedRegion = this.regions[0];
+      }
+    });
   }
 
   getType(): void {
@@ -38,7 +43,6 @@ export class AppComponent implements OnInit {
   getAccidents(): void {
     this.apiService.getAccidents(this.selectedRegion.name, this.year, this.selectedType ? this.selectedType.typeName : null)
       .subscribe(accidents => {
-        console.log(accidents);
         this.mapService.setAccident(accidents);
       });
   }

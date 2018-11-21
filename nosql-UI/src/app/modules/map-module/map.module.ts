@@ -14,10 +14,12 @@ import {
   MessageService,
   TabViewModule
 } from 'primeng/primeng';
+import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   imports: [
+    ButtonModule,
     CommonModule,
     GMapModule,
     FormsModule,

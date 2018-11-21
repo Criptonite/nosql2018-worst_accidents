@@ -8,6 +8,6 @@ export class DtpInfo {
   weather: string;
   longitude: number;
   latitude: number;
-  tsInfo: TsInfo[];
-  uchInfo: UchInfo[];
+  ts_info: TsInfo[];
+  uch_info: UchInfo[];
 }

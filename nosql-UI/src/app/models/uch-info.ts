@@ -1,6 +1,6 @@
 export class UchInfo {
   role: string;
-  npdd: string[];
+  NPDD: string[];
   gender: string;
   state: string;
 }

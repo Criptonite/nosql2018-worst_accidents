@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {MessageService} from 'primeng/api';
 import {MapService} from '../map.service';
 import {Accident} from '../../../models/accident';
@@ -28,24 +28,50 @@ export class MapComponent implements OnInit {
 
   private mapServiceSubscription: any;
 
+  private accidents: Accident[];
+  selectedAccident: Accident;
+  shortInfoDialog: boolean;
+  longInfoDialog: boolean;
+
   constructor(private messageService: MessageService, private mapService: MapService) {}
+
+  @ViewChild('gmap')
+  gMapComponent: any;
 
   ngOnInit() {
     this.options = {
       center: {lat: 36.890257, lng: 30.707417},
-      zoom: 5
+      zoom: 6
     };
-
-    this.initOverlays();
 
     this.infoWindow = new google.maps.InfoWindow();
     this.mapServiceSubscription = this.mapService.subscribe(data => {
-      data.forEach(accident => this.handleAccident(accident));
+      if (data) {
+        this.clear();
+        this.accidents = data;
+        if (data.length > 0) {
+          data.forEach(accident => this.handleAccident(accident));
+          const lastAccident = data[data.length - 1];
+          this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
+        }
+      }
     });
   }
 
   handleAccident(accident: Accident) {
-    this.addMarker(accident.dtpInfo.latitude, accident.dtpInfo.longitude, accident.kartId);
+    this.addMarker(this.getLatFromAccident(accident), this.getLngFromAccident(accident), accident.KartId);
+  }
+
+  openDetailedReport() {
+    this.longInfoDialog = true;
+  }
+
+  getLatFromAccident(acc: Accident) {
+    return acc.dtp_info.latitude;
+  }
+
+  getLngFromAccident(acc: Accident) {
+    return acc.dtp_info.longitude;
   }
 
   handleOverlayClick(event) {
@@ -53,14 +79,22 @@ export class MapComponent implements OnInit {
 
     if (isMarker) {
       const title = event.overlay.getTitle();
-      this.infoWindow.setContent('' + title + '');
-      this.infoWindow.open(event.map, event.overlay);
+      this.selectAccidentById(event.overlay.getTitle());
       event.map.setCenter(event.overlay.getPosition());
+      this.shortInfoDialog = true;
 
       this.messageService.add({severity: 'info', summary: 'Marker Selected', detail: title});
     } else {
       this.messageService.add({severity: 'info', summary: 'Shape Selected', detail: ''});
     }
+  }
+
+  selectAccidentById (id: string): void {
+    this.selectedAccident = this.accidents.find(accident => accident.KartId === id);
+  }
+
+  setCenter(lat, lng) {
+    this.gMapComponent.getMap().setCenter(new google.maps.LatLng(lat, lng));
   }
 
   addMarker(lat, lng, title?) {
@@ -75,30 +109,6 @@ export class MapComponent implements OnInit {
       }));
     this.markerTitle = null;
     this.dialogVisible = false;
-  }
-
-  initOverlays() {
-    if (!this.overlays || !this.overlays.length) {
-      this.overlays = [
-        new google.maps.Marker({position: {lat: 36.879466, lng: 30.667648}, title: 'Konyaalti'}),
-        new google.maps.Marker({position: {lat: 36.883707, lng: 30.689216}, title: 'Ataturk Park'}),
-        new google.maps.Marker({position: {lat: 36.885233, lng: 30.702323}, title: 'Oldtown'}),
-        new google.maps.Polygon({paths: [
-            {lat: 36.9177, lng: 30.7854}, {lat: 36.8851, lng: 30.7802}, {lat: 36.8829, lng: 30.8111}, {lat: 36.9177, lng: 30.8159}
-          ], strokeOpacity: 0.5, strokeWeight: 1, fillColor: '#1976D2', fillOpacity: 0.35
-        }),
-        new google.maps.Circle({center: {lat: 36.90707, lng: 30.56533}, fillColor: '#1976D2', fillOpacity: 0.35, strokeWeight: 1, radius: 1500}),
-        new google.maps.Polyline({path: [{lat: 36.86149, lng: 30.63743}, {lat: 36.86341, lng: 30.72463}], geodesic: true, strokeColor: '#FF0000', strokeOpacity: 0.5, strokeWeight: 2})
-      ];
-    }
-  }
-
-  zoomIn(map) {
-    map.setZoom(map.getZoom() + 1);
-  }
-
-  zoomOut(map) {
-    map.setZoom(map.getZoom() - 1);
   }
 
   clear() {

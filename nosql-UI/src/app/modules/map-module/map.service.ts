@@ -13,7 +13,7 @@ export class MapService {
   private _data = new BehaviorSubject(this.accidents);
 
   setAccident(accidentData: Accident[]) {
-    if (accidentData && accidentData.length) {  this._data.next(accidentData); }
+    if (accidentData) {  this._data.next(accidentData); }
   }
 
   subscribe = async (func) => {

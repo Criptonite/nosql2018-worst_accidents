@@ -20,7 +20,6 @@
           [header]="'Полный отчет по аварии'">
   <div *ngIf="selectedAccident" class="dialog-content">
     <div class="region-description">
-      <span><b>Год: </b>{{selectedAccident.date || 'Нет Данных'}}</span><br>
       <span><b>Код региона: </b>{{selectedAccident.code || 'Нет Данных'}}</span><br>
       <span><b>Название региона: </b>{{selectedAccident.name || 'Нет Данных'}}</span><br>
     </div>
@@ -69,16 +68,16 @@
           <span><b>Модель: </b>{{ts.type || 'Нет Данных'}}</span><br>
         </div>
       </div>
-      <div *ngFor="let uch of selectedAccident.dtp_info.uch_info; let j = index" class="uch">
+      <div *ngFor="let ts_uch of ts.uch_info; let j = index" class="uch">
         <span><b>Участник №{{j+1}} (TC № {{i+1}})</b></span><br>
         <div class="ui-g">
           <div class="ui-g-4">
-            <span><b>Тип участника: </b>{{uch.role || 'Нет Данных'}}</span><br>
-            <span><b>Пол: </b>{{uch.gender || 'Нет Данных'}}</span><br>
+            <span><b>Тип участника: </b>{{ts_uch.role || 'Нет Данных'}}</span><br>
+            <span><b>Пол: </b>{{ts_uch.gender || 'Нет Данных'}}</span><br>
           </div>
           <div class="ui-g-8">
-            <span><b>Состояние: </b>{{uch.state || 'Нет Данных'}}</span><br>
-            <span><b>Нарушение ПДД: </b>{{uch.NPDD || 'Нет Данных'}}</span><br>
+            <span><b>Состояние: </b>{{ts_uch.state || 'Нет Данных'}}</span><br>
+            <span><b>Нарушение ПДД: </b>{{ts_uch.NPDD || 'Нет Данных'}}</span><br>
           </div>
         </div>
       </div>

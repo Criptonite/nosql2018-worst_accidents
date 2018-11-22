@@ -13,19 +13,10 @@ declare var google: any;
 export class MapComponent implements OnInit {
 
   options: any;
-
   overlays: any[];
-
   dialogVisible: boolean;
-
   markerTitle: string;
-
-  selectedPosition: any;
-
   infoWindow: any;
-
-  draggable: boolean;
-
   private mapServiceSubscription: any;
 
   private accidents: Accident[];
@@ -108,5 +99,4 @@ export class MapComponent implements OnInit {
   clear() {
     this.overlays = [];
   }
-
 }

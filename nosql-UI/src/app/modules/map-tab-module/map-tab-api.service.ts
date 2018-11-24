@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Region} from './models/region';
+import {Region} from '../../models/region';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -9,11 +9,8 @@ const httpOptions = {
   })
 };
 
-@Injectable({
-  providedIn: 'root'
-})
-
-export class ApiService {
+@Injectable()
+export class MapTabApiService {
 
   constructor(private httpClient: HttpClient) {
   }

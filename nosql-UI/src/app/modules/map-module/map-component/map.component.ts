@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MessageService} from 'primeng/api';
 import {MapService} from '../map.service';
 import {Accident} from '../../../models/accident';
@@ -20,6 +20,7 @@ export class MapComponent implements OnInit {
   private mapServiceSubscription: any;
 
   private accidents: Accident[];
+  private heatMapLayer: any;
   selectedAccident: Accident;
   shortInfoDialog: boolean;
   longInfoDialog: boolean;
@@ -44,11 +45,28 @@ export class MapComponent implements OnInit {
           data.forEach(accident => this.handleAccident(accident));
           const lastAccident = data[data.length - 1];
           this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
+          this.initHeapLayer(data);
         } else {
           this.messageService.add({severity: 'info', summary: 'Нет происшествий для выбраных параметров'});
+          this.disableHeatMapLayer();
         }
       }
     });
+  }
+
+  initHeapLayer(data: Accident[]) {
+    const points = this.mapService.getDataCoords(data);
+    const gPoints = [];
+    points.forEach(point => gPoints.push(new google.maps.LatLng(point.lat, point.lng)));
+    this.heatMapLayer = new google.maps.visualization.HeatmapLayer({
+      data: gPoints
+    });
+    this.heatMapLayer.set('radius', this.heatMapLayer.get('radius') ? null : 20);
+    this.heatMapLayer.setMap(this.gMapComponent.getMap());
+  }
+
+  disableHeatMapLayer() {
+    if (this.heatMapLayer) { this.heatMapLayer.setMap(null); }
   }
 
   handleAccident(accident: Accident) {

@@ -1,0 +1,18 @@
+<div class="selector">
+  <p-dropdown [options]="chartTypes" [(ngModel)]="chartType" placeholder="Select chart type"></p-dropdown>
+</div>
+<div class="chart-block">
+  <ng-container [ngSwitch]="chartType">
+    <ng-container *ngSwitchCase="'firstType'">
+      <p-chart type="pie" [data]="pieData"></p-chart>
+    </ng-container>
+    <ng-container *ngSwitchCase="'secondType'">
+      <p-chart type="bar" [data]="barChartData"></p-chart>
+    </ng-container>
+    <ng-container *ngSwitchCase="'thirdType'">
+      <p-chart type="line" [data]="lineChartData"></p-chart>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+    </ng-container>
+  </ng-container>
+</div>

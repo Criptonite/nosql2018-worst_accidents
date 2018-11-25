@@ -5,7 +5,7 @@ import {ChartsService} from './charts.service';
 import {ChartsApiService} from './charts-api.service';
 import {ChartModule} from 'primeng/chart';
 import {CommonModule} from '@angular/common';
-import {DropdownModule} from 'primeng/primeng';
+import {ButtonModule, DropdownModule, ListboxModule, ProgressSpinnerModule} from 'primeng/primeng';
 import {FormsModule} from '@angular/forms';
 
 const routes: Routes = [{path: '', component: ChartsComponent}];
@@ -16,7 +16,10 @@ const routes: Routes = [{path: '', component: ChartsComponent}];
     ChartModule,
     CommonModule,
     DropdownModule,
-    FormsModule
+    FormsModule,
+    ListboxModule,
+    ProgressSpinnerModule,
+    ButtonModule
   ],
   declarations: [
     ChartsComponent

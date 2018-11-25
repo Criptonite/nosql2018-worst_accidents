@@ -1,18 +1,46 @@
-<div class="selector">
-  <p-dropdown [options]="chartTypes" [(ngModel)]="chartType" placeholder="Select chart type"></p-dropdown>
+<div class="selectors">
+  <p-dropdown class="selector" [options]="chartTypes" [(ngModel)]="chartType"
+              placeholder="Select chart type"></p-dropdown>
+  <p-listbox class="selector"
+             [options]="regions"
+             [(ngModel)]="selectedRegions"
+             multiple="multiple"
+             checkbox="checkbox"
+             filter="filter"
+             optionLabel="name"
+             [listStyle]="{'max-height':'250px'}">
+    <p-header>
+      Regions
+    </p-header>
+  </p-listbox>
+  <p-listbox class="selector" [options]="years" [(ngModel)]="selectedYears" multiple="multiple" checkbox="checkbox"
+             filter="filter" optionLabel="name" [listStyle]="{'max-height':'250px'}">
+    <p-header>
+      Years
+    </p-header>
+  </p-listbox>
+  <div class="button">
+    <button pButton class="selector" label="Get report" (click)="getReport()"
+            [disabled]="!(selectedRegions && selectedRegions.length) || !(selectedYears && selectedYears.length) || !chartType"></button>
+  </div>
 </div>
 <div class="chart-block">
-  <ng-container [ngSwitch]="chartType">
-    <ng-container *ngSwitchCase="'firstType'">
-      <p-chart type="pie" [data]="pieData"></p-chart>
+  <ng-container *ngIf="!reportLoading">
+    <ng-container [ngSwitch]="chartType">
+      <ng-container *ngSwitchCase="'firstType'">
+        <p-chart type="pie" [data]="pieData"></p-chart>
+      </ng-container>
+      <ng-container *ngSwitchCase="'secondType'">
+        <p-chart type="bar" [data]="barChartData"></p-chart>
+      </ng-container>
+      <ng-container *ngSwitchCase="'thirdType'">
+        <p-chart type="line" [data]="lineChartData"></p-chart>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+      </ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="'secondType'">
-      <p-chart type="bar" [data]="barChartData"></p-chart>
-    </ng-container>
-    <ng-container *ngSwitchCase="'thirdType'">
-      <p-chart type="line" [data]="lineChartData"></p-chart>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="reportLoading">
+    <p-progressSpinner></p-progressSpinner>
   </ng-container>
 </div>

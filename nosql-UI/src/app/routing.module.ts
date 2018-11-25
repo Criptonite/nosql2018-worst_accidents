@@ -11,6 +11,10 @@ const routes: Routes = [
     path: 'charts',
     loadChildren: './modules/charts-module/charts.module#ChartsModule',
   },
+  {
+    path: 'uploader',
+    loadChildren: './modules/uploader-module/uploader.module#UploaderModule',
+  },
   // {
   //   path: '',
   //   redirectTo: '/map',

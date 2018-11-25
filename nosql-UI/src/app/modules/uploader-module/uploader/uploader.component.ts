@@ -3,6 +3,7 @@ import {Accident} from '../../../models/accident';
 import {DtpInfo} from '../../../models/dtp-info';
 import {TsInfo} from '../../../models/ts-info';
 import {UchInfo} from '../../../models/uch-info';
+import {UploaderApiService} from '../uploader-api.service';
 
 @Component({
   selector: 'app-uploader',
@@ -11,22 +12,23 @@ import {UchInfo} from '../../../models/uch-info';
 })
 export class UploaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private uploaderApiService: UploaderApiService) { }
 
   ngOnInit() {
   }
 
   myUploader(event) {
     const files = event.files;
-    const fileReader = new FileReader();
-    fileReader.readAsText(files[0]);
-    let str;
-    fileReader.onloadend = () => {
-      str = fileReader.result;
-      const json = JSON.parse(str);
-      this.regionMapper(JSON.parse(json.data));
-    };
-
+    files.forEach(file => {
+      const fileReader = new FileReader();
+      fileReader.readAsText(file);
+      let str;
+      fileReader.onloadend = () => {
+        str = fileReader.result;
+        const json = JSON.parse(str);
+        this.regionMapper(JSON.parse(json.data));
+      };
+    });
   }
 
   regionMapper(regionData): void {
@@ -46,7 +48,9 @@ export class UploaderComponent implements OnInit {
       accident.dtp_info = this.dtpMapper(card.infoDtp);
       return accident;
     });
-    console.log(accidents);
+    this.uploaderApiService.addAccident(accidents).subscribe(result => {
+      console.log('Sent');
+      });
   }
 
   dtpMapper(dtpData): DtpInfo {

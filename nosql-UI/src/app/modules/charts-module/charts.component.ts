@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ChartsApiService} from './charts-api.service';
+import {Region} from '../../models/region';
 
 @Component({
   selector: 'app-charts',
@@ -13,11 +14,24 @@ export class ChartsComponent  implements OnInit {
   pieData: any;
   barChartData: any;
   lineChartData: any;
+  regions: Region [];
+  years: any[];
+  selectedRegions: Region [];
+  selectedYears: number [];
+  reportLoading = false;
 
   constructor (private chartApiService: ChartsApiService) {
   }
 
   ngOnInit(): void {
+    this.getRegions();
+    this.years = [
+      {name: '2014', value: 2014},
+      {name: '2015', value: 2015},
+      {name: '2016', value: 2016},
+      {name: '2017', value: 2017},
+      {name: '2018', value: 2018},
+    ];
     this.chartTypes = [
       {label: 'Pie Chart', value: 'firstType'},
       {label: 'Bar Chart', value: 'secondType'},
@@ -74,5 +88,18 @@ export class ChartsComponent  implements OnInit {
         }
       ]
     };
+  }
+
+  getRegions(): void {
+    this.chartApiService.getAllRegions().subscribe(regions => {
+      this.regions = regions;
+    });
+  }
+
+  getReport(): void {
+    this.reportLoading = true;
+    this.chartApiService.getReport(this.chartType, this.selectedYears, this.selectedRegions).subscribe(report => {
+      this.reportLoading = false;
+    });
   }
 }

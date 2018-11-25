@@ -55,4 +55,10 @@ public class AccidentController {
         accidentService.addAccident(accident);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @RequestMapping(method = POST, value = "/addAccidentList")
+    public ResponseEntity<?> addAccidents(@RequestBody List<Accident> accidents) {
+        accidents.forEach(accident -> accidentService.addAccident(accident));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

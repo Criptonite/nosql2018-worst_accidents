@@ -1,8 +1,6 @@
 package com.leti.server.services;
 
-import com.leti.server.entities.Accident;
-import com.leti.server.entities.Region;
-import com.leti.server.entities.Type;
+import com.leti.server.entities.*;
 import com.leti.server.repositories.AccidentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +46,17 @@ public class AccidentService {
             regionService.addRegion(new Region(accident.getCode(), accident.getRegion()));
         }
         return accidentRepository.insert(accident);
+    }
+
+    public Integer getAccidentsWithDeathCount(Region region, Integer year) {
+        return accidentRepository.countAccidentsWithDeath(region.getName(), String.valueOf(year));
+    }
+
+    public DeathTsDependency getDeathDependsTsCount(Region region, Integer year) {
+        return accidentRepository.countDeathTsDependancyInRegion(region.getName(), String.valueOf(year));
+    }
+
+    public ManWoman getGuiltyManWomanCount(Region region, Integer year) {
+        return accidentRepository.countGuiltyManWomanInRegion(region.getName(), String.valueOf(year));
     }
 }

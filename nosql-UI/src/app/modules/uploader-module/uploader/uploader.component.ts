@@ -50,7 +50,7 @@ export class UploaderComponent implements OnInit {
     });
     this.uploaderApiService.addAccident(accidents).subscribe(result => {
       console.log('Sent');
-      });
+    });
   }
 
   dtpMapper(dtpData): DtpInfo {

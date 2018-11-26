@@ -12,7 +12,7 @@ import {
   DialogModule,
   InputTextModule,
   MessageService,
-  TabViewModule
+  TabViewModule, ToggleButtonModule
 } from 'primeng/primeng';
 import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
@@ -28,7 +28,8 @@ import {ToastModule} from 'primeng/toast';
     CheckboxModule,
     DialogModule,
     TabViewModule,
-    CodeHighlighterModule
+    CodeHighlighterModule,
+    ToggleButtonModule
   ],
   declarations: [MapComponent],
   entryComponents: [MapComponent],

@@ -24,8 +24,11 @@ export class MapComponent implements OnInit {
   selectedAccident: Accident;
   shortInfoDialog: boolean;
   longInfoDialog: boolean;
+  heatMapLayerEnabled = false;
+  markerLayerEnabled = true;
 
-  constructor(private messageService: MessageService, private mapService: MapService) {}
+  constructor(private messageService: MessageService, private mapService: MapService) {
+  }
 
   @ViewChild('gmap')
   gMapComponent: any;
@@ -43,9 +46,11 @@ export class MapComponent implements OnInit {
         this.accidents = data;
         if (data.length > 0) {
           data.forEach(accident => this.handleAccident(accident));
-          const lastAccident = data[data.length - 1];
-          this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
-          this.initHeapLayer(data);
+          if (this.gMapComponent.getMap()) {
+            const lastAccident = this.accidents[this.accidents.length - 1];
+            this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
+            this.initHeapLayer(this.accidents);
+          }
         } else {
           this.messageService.add({severity: 'info', summary: 'Нет происшествий для выбраных параметров'});
           this.disableHeatMapLayer();
@@ -62,11 +67,39 @@ export class MapComponent implements OnInit {
       data: gPoints
     });
     this.heatMapLayer.set('radius', this.heatMapLayer.get('radius') ? null : 20);
-    this.heatMapLayer.setMap(this.gMapComponent.getMap());
+    if (this.heatMapLayerEnabled) {
+      this.heatMapLayer.setMap(this.gMapComponent.getMap());
+    }
+  }
+
+  enableHeatMapLayer() {
+    if (this.heatMapLayer) {
+      this.heatMapLayer.setMap(this.gMapComponent.getMap());
+    }
   }
 
   disableHeatMapLayer() {
-    if (this.heatMapLayer) { this.heatMapLayer.setMap(null); }
+    if (this.heatMapLayer) {
+      this.heatMapLayer.setMap(null);
+    }
+  }
+
+  enableMarkerLayer() {
+    if (this.overlays) {
+      this.setMapForMarkers(this.gMapComponent.getMap());
+    }
+  }
+
+  disableMarkerLayer() {
+    if (this.overlays) {
+      this.setMapForMarkers(null);
+    }
+  }
+
+  setMapForMarkers(map) {
+    this.overlays.forEach(marker => {
+      marker.setMap(map);
+    });
   }
 
   handleAccident(accident: Accident) {
@@ -86,13 +119,13 @@ export class MapComponent implements OnInit {
   }
 
   handleOverlayClick(event) {
-      const title = event.overlay.getTitle();
-      this.selectAccidentById(event.overlay.getTitle());
-      event.map.setCenter(event.overlay.getPosition());
-      this.shortInfoDialog = true;
+    const title = event.overlay.getTitle();
+    this.selectAccidentById(event.overlay.getTitle());
+    event.map.setCenter(event.overlay.getPosition());
+    this.shortInfoDialog = true;
   }
 
-  selectAccidentById (id: string): void {
+  selectAccidentById(id: string): void {
     this.selectedAccident = this.accidents.find(accident => accident.KartId === id);
   }
 
@@ -103,12 +136,12 @@ export class MapComponent implements OnInit {
   addMarker(lat, lng, title?) {
     this.overlays.push(
       new google.maps.Marker({
-          position: {
-              lat: lat,
-              lng: lng
-          },
-          title: title,
-          draggable: false
+        position: {
+          lat: lat,
+          lng: lng
+        },
+        title: title,
+        draggable: false
       }));
     this.markerTitle = null;
     this.dialogVisible = false;
@@ -116,5 +149,29 @@ export class MapComponent implements OnInit {
 
   clear() {
     this.overlays = [];
+  }
+
+  heatMapLayerChange(e: any) {
+    if (e.checked) {
+      this.enableHeatMapLayer();
+    } else {
+      this.disableHeatMapLayer();
+    }
+  }
+
+  markerLayerChange(e: any) {
+    if (e.checked) {
+      this.enableMarkerLayer();
+    } else {
+      this.disableMarkerLayer();
+    }
+  }
+
+  onMapReadyEvent($event: any) {
+    if (this.accidents && this.accidents.length) {
+      const lastAccident = this.accidents[this.accidents.length - 1];
+      this.setCenter(this.getLatFromAccident(lastAccident), this.getLngFromAccident(lastAccident));
+      this.initHeapLayer(this.accidents);
+    }
   }
 }

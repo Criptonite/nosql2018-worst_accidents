@@ -1,7 +1,13 @@
 <p-toast [style]="{marginTop: '80px'}"></p-toast>
+<div class="map-layers-configurator">
+  <p-toggleButton class="map-layer-button" onLabel="Heat map layer enabled" offLabel="Heat map layer disabled"
+                  (onChange)="heatMapLayerChange($event)" [(ngModel)]="heatMapLayerEnabled"></p-toggleButton>
+  <p-toggleButton class="map-layer-button" onLabel="Marker layer enabled" offLabel="Marker layer disabled"
+                  (onChange)="markerLayerChange($event)" [(ngModel)]="markerLayerEnabled"></p-toggleButton>
+</div>
 <div>
   <p-gmap #gmap [style]="{'width':'100%','height':'640px', 'margin-bottom': '1em'}" [options]="options"
-          [overlays]="overlays"
+          [overlays]="markerLayerEnabled ? overlays : null" (onMapReady)="onMapReadyEvent($event)"
           (onOverlayClick)="handleOverlayClick($event)"></p-gmap>
 </div>
 

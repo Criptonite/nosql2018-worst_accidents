@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ChartsApiService} from './charts-api.service';
 import {Region} from '../../models/region';
+import {ChartsService} from './charts.service';
 
 @Component({
   selector: 'app-charts',
@@ -9,7 +10,7 @@ import {Region} from '../../models/region';
 })
 export class ChartsComponent  implements OnInit {
 
-  chartType: string;
+  chartType: any;
   chartTypes: any;
   pieData: any;
   barChartData: any;
@@ -17,10 +18,10 @@ export class ChartsComponent  implements OnInit {
   regions: Region [];
   years: any[];
   selectedRegions: Region [];
-  selectedYears: number [];
+  selectedYears: any [];
   reportLoading = false;
 
-  constructor (private chartApiService: ChartsApiService) {
+  constructor (private chartApiService: ChartsApiService, private chartService: ChartsService) {
   }
 
   ngOnInit(): void {
@@ -33,60 +34,22 @@ export class ChartsComponent  implements OnInit {
       {name: '2018', value: 2018},
     ];
     this.chartTypes = [
-      {label: 'Pie Chart', value: 'firstType'},
-      {label: 'Bar Chart', value: 'secondType'},
-      {label: 'Line Chart', value: 'thirdType'}
+      {label: 'Deaths by TS count', value: 0},
+      {label: 'Deaths by regions', value: 1},
+      {label: 'Men/Women in accidents', value: 2},
     ];
-    this.barChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'My First dataset',
-          backgroundColor: '#42A5F5',
-          borderColor: '#1E88E5',
-          data: [65, 59, 80, 81, 56, 55, 40]
-        },
-        {
-          label: 'My Second dataset',
-          backgroundColor: '#9CCC65',
-          borderColor: '#7CB342',
-          data: [28, 48, 40, 19, 86, 27, 90]
-        }
-      ]
-    };
-    this.pieData = {
-      labels: ['A', 'B', 'C'],
-      datasets: [
-        {
-          data: [300, 50, 100],
-          backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56'
-          ],
-          hoverBackgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56'
-          ]
-        }]
-    };
-    this.lineChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#4bc0c0'
-        },
-        {
-          label: 'Second Dataset',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          fill: false,
-          borderColor: '#565656'
-        }
-      ]
+  }
+
+  chartOptions(title: string) {
+    return {
+      title: {
+        display: true,
+        text: title,
+        fontSize: 16
+      },
+      legend: {
+        position: 'bottom'
+      }
     };
   }
 
@@ -98,8 +61,31 @@ export class ChartsComponent  implements OnInit {
 
   getReport(): void {
     this.reportLoading = true;
-    this.chartApiService.getReport(this.chartType, this.selectedYears, this.selectedRegions).subscribe(report => {
+    this.clearReportData();
+    const years = this.selectedYears.map(year => year.value);
+    this.chartApiService.getReport(this.chartType, years, this.selectedRegions).subscribe(report => {
+      switch (this.chartType) {
+        case 0:
+          this.lineChartData = this.chartService.getDeathTsByRegionsData(report);
+          break;
+        case 1:
+          this.barChartData = this.chartService.getDeathByRegionsData(report);
+          break;
+        case 2:
+          this.pieData = this.chartService.getGuiltyByRegionsData(report);
+          break;
+      }
       this.reportLoading = false;
     });
+  }
+
+  isReportDataLoaded(): boolean {
+    return this.pieData || this.barChartData || this.lineChartData;
+  }
+
+  clearReportData() {
+    this.barChartData = null;
+    this.lineChartData = null;
+    this.pieData = null;
   }
 }

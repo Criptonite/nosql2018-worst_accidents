@@ -12,12 +12,15 @@ import {UploaderApiService} from '../uploader-api.service';
 })
 export class UploaderComponent implements OnInit {
 
+  uploading = false;
+
   constructor(private uploaderApiService: UploaderApiService) { }
 
   ngOnInit() {
   }
 
   myUploader(event) {
+    this.uploading = true;
     const files = event.files;
     files.forEach(file => {
       const fileReader = new FileReader();
@@ -26,12 +29,19 @@ export class UploaderComponent implements OnInit {
       fileReader.onloadend = () => {
         str = fileReader.result;
         const json = JSON.parse(str);
-        this.regionMapper(JSON.parse(json.data));
+        const accidents = this.regionMapper(JSON.parse(json.data));
+        this.uploaderApiService.addAccident(accidents).subscribe(result => {
+          console.log('Sent');
+          this.uploading = false;
+        }, err => {
+          console.log('Error', err);
+          this.uploading = false;
+        });
       };
     });
   }
 
-  regionMapper(regionData): void {
+  regionMapper(regionData): any {
     const regionName = regionData.region_name;
     const regionCode = regionData.region_code;
     const accidents = regionData.cards.map(card => {
@@ -48,9 +58,7 @@ export class UploaderComponent implements OnInit {
       accident.dtp_info = this.dtpMapper(card.infoDtp);
       return accident;
     });
-    this.uploaderApiService.addAccident(accidents).subscribe(result => {
-      console.log('Sent');
-    });
+    return accidents;
   }
 
   dtpMapper(dtpData): DtpInfo {

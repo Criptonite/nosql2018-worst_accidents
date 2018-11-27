@@ -13,7 +13,7 @@ const httpOptions = {
 export class ChartsApiService {
 
   private regionListUrl = '/regions';
-  private reportUrl = '/report';
+  private reportUrl = '/statistic';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -23,6 +23,6 @@ export class ChartsApiService {
   }
 
   getReport(chartType: string, selectedYears: number[], selectedRegions: Region[]): Observable<any> {
-    return this.httpClient.post(this.reportUrl, {type: chartType, years: selectedYears, regions: selectedRegions}, httpOptions);
+    return this.httpClient.post(this.reportUrl, {reportType: chartType, years: selectedYears, regions: selectedRegions}, httpOptions);
   }
 }

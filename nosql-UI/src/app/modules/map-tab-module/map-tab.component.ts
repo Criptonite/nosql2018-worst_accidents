@@ -22,7 +22,7 @@ export class MapTabComponent implements OnInit {
 
   ngOnInit() {
     this.selectedRegion = null;
-    this.year = 2018;
+    this.year = this.year || 2018;
     this.getRegions();
     this.getType();
   }
@@ -31,7 +31,7 @@ export class MapTabComponent implements OnInit {
     this.apiService.getAllRegions().subscribe(regions => {
       this.regions = regions;
       if (this.regions && this.regions.length) {
-        this.selectedRegion = this.regions[0];
+        this.selectedRegion = this.selectedRegion || this.regions[0];
       }
     });
   }

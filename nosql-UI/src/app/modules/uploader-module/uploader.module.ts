@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UploaderComponent } from './uploader/uploader.component';
-import {FileUploadModule} from 'primeng/primeng';
+import {FileUploadModule, ProgressSpinnerModule} from 'primeng/primeng';
 import {UploaderApiService} from './uploader-api.service';
 import {RouterModule, Routes} from '@angular/router';
 
@@ -11,7 +11,8 @@ const routes: Routes = [{path: '', component: UploaderComponent}];
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
-    FileUploadModule
+    FileUploadModule,
+    ProgressSpinnerModule
   ],
   declarations: [UploaderComponent],
   providers: [UploaderApiService]

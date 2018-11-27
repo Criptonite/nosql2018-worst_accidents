@@ -1,1 +1,8 @@
-<p-fileUpload name="myfile[]" customUpload="true" (uploadHandler)="myUploader($event)"></p-fileUpload>
+<div class="upload-block">
+  <ng-container *ngIf="!uploading">
+    <p-fileUpload name="myfile[]" customUpload="true" multiple="multiple" (uploadHandler)="myUploader($event)"></p-fileUpload>
+  </ng-container>
+  <ng-container *ngIf="uploading">
+    <p-progressSpinner></p-progressSpinner>
+  </ng-container>
+</div>

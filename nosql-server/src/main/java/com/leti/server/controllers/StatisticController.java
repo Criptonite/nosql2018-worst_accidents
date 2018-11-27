@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,12 +37,10 @@ public class StatisticController {
                 body.getYears().forEach(year -> {
                     DeathTsDependencyStat deathInRegion = new DeathTsDependencyStat();
 //                    body.getRegions().forEach(region -> deathInRegion.addRegionStat(region.getName(), accidentService.getDeathDependsTsCount(region, year)));
-                    body.getRegions().forEach(region -> {
-                        deathInRegion.addRegionStat(region.getName(), accidentService.getAccidentsWithDeath(region.getName(), year)
-                                .stream()
-                                .map(this::createDeathTsDependency)
-                                .collect(Collectors.toList()));
-                    });
+                    body.getRegions().forEach(region -> deathInRegion.addRegionStat(region.getName(), accidentService.getAccidentsWithDeath(region.getName(), year)
+                            .stream()
+                            .map(this::createDeathTsDependency)
+                            .collect(Collectors.toList())));
                     deathByTsAmount.put(year, deathInRegion);
                 });
                 return deathByTsAmount;
@@ -56,9 +55,9 @@ public class StatisticController {
             case REPORT_ACCIDENT_DEPENDS_WOMAN:
                 Map<Integer, ManWomanStat> guiltyWomen = new HashMap<>();
                 body.getYears().forEach(year -> {
-                    ManWomanStat deathInRegion = new ManWomanStat();
-                    body.getRegions().forEach(region -> deathInRegion.addRegionStat(region.getName(), accidentService.getGuiltyManWomanCount(region, year)));
-                    guiltyWomen.put(year, deathInRegion);
+                    ManWomanStat inRegion = new ManWomanStat();
+                    body.getRegions().forEach(region -> inRegion.addRegionStat(region.getName(), createManWoman(accidentService.getAccidentsByRegion(region.getName(), String.valueOf(year)))));
+                    guiltyWomen.put(year, inRegion);
                 });
                 return guiltyWomen;
             default:
@@ -88,5 +87,38 @@ public class StatisticController {
         dtd.setTsCount(accident.getDtpInfo().getTsInfo().size());
         dtd.setDeathCount(getAllDeathFromAccident(accident));
         return dtd;
+    }
+
+    private ManWoman createManWoman(List<Accident> accidents) {
+        int guiltyManUch = (int) accidents
+                .stream()
+                .flatMap(accident -> accident.getDtpInfo().getUchInfo().stream())
+                .filter(info -> "Мужской".equals(info.getGender()))
+                .filter(info -> !info.getNpdd().contains("Нет нарушений"))
+                .count();
+        int guiltyManTs = (int) accidents
+                .stream()
+                .flatMap(accident -> accident.getDtpInfo().getTsInfo().stream())
+                .flatMap(tsInfo -> tsInfo.getUchInfo().stream())
+                .filter(info -> "Мужской".equals(info.getGender()))
+                .filter(info -> !info.getNpdd().contains("Нет нарушений"))
+                .count();
+        int guiltyMan = guiltyManUch + guiltyManTs;
+
+        int guiltyWomanUch = (int) accidents
+                .stream()
+                .flatMap(accident -> accident.getDtpInfo().getUchInfo().stream())
+                .filter(info -> "Женский".equals(info.getGender()))
+                .filter(info -> !info.getNpdd().contains("Нет нарушений"))
+                .count();
+        int guiltyWomanTs = (int) accidents
+                .stream()
+                .flatMap(accident -> accident.getDtpInfo().getTsInfo().stream())
+                .flatMap(tsInfo -> tsInfo.getUchInfo().stream())
+                .filter(info -> "Женский".equals(info.getGender()))
+                .filter(info -> !info.getNpdd().contains("Нет нарушений"))
+                .count();
+        int guiltyWoman = guiltyWomanUch + guiltyWomanTs;
+        return new ManWoman(guiltyMan, guiltyWoman);
     }
 }

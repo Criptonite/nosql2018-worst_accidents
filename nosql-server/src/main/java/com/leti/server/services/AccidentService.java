@@ -59,4 +59,8 @@ public class AccidentService {
     public ManWoman getGuiltyManWomanCount(Region region, Integer year) {
         return accidentRepository.countGuiltyManWomanInRegion(region.getName(), String.valueOf(year));
     }
+
+    public List<Accident> getAccidentsWithDeath(String region, int year) {
+        return accidentRepository.findAccidentWithDeath(region, String.valueOf(year));
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -34,7 +35,13 @@ public class StatisticController {
                 Map<Integer, DeathTsDependencyStat> deathByTsAmount = new HashMap<>();
                 body.getYears().forEach(year -> {
                     DeathTsDependencyStat deathInRegion = new DeathTsDependencyStat();
-                    body.getRegions().forEach(region -> deathInRegion.addRegionStat(region.getName(), accidentService.getDeathDependsTsCount(region, year)));
+//                    body.getRegions().forEach(region -> deathInRegion.addRegionStat(region.getName(), accidentService.getDeathDependsTsCount(region, year)));
+                    body.getRegions().forEach(region -> {
+                        deathInRegion.addRegionStat(region.getName(), accidentService.getAccidentsWithDeath(region.getName(), year)
+                                .stream()
+                                .map(this::createDeathTsDependency)
+                                .collect(Collectors.toList()));
+                    });
                     deathByTsAmount.put(year, deathInRegion);
                 });
                 return deathByTsAmount;
@@ -59,4 +66,27 @@ public class StatisticController {
         }
     }
 
+
+    private int getAllDeathFromAccident(Accident accident) {
+        DtpInfo dtpInfo = accident.getDtpInfo();
+        int deadUch = (int) dtpInfo.getUchInfo()
+                .stream()
+                .filter(uchInfo -> uchInfo.getState().startsWith("Скончался"))
+                .count();
+        int deadInTs = dtpInfo.getTsInfo()
+                .stream()
+                .mapToInt(info -> (int) info.getUchInfo()
+                        .stream()
+                        .filter(uchInfo -> uchInfo.getState().startsWith("Скончался"))
+                        .count())
+                .sum();
+        return deadUch + deadInTs;
+    }
+
+    private DeathTsDependency createDeathTsDependency(Accident accident) {
+        DeathTsDependency dtd = new DeathTsDependency();
+        dtd.setTsCount(accident.getDtpInfo().getTsInfo().size());
+        dtd.setDeathCount(getAllDeathFromAccident(accident));
+        return dtd;
+    }
 }

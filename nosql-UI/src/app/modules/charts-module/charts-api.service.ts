@@ -12,6 +12,7 @@ const httpOptions = {
 @Injectable()
 export class ChartsApiService {
 
+  private baseUrl = '/api';
   private regionListUrl = '/regions';
   private reportUrl = '/statistic';
 
@@ -19,10 +20,10 @@ export class ChartsApiService {
   }
 
   getAllRegions(): Observable<any> {
-    return this.httpClient.get(this.regionListUrl);
+    return this.httpClient.get(this.baseUrl + this.regionListUrl);
   }
 
   getReport(chartType: string, selectedYears: number[], selectedRegions: Region[]): Observable<any> {
-    return this.httpClient.post(this.reportUrl, {reportType: chartType, years: selectedYears, regions: selectedRegions}, httpOptions);
+    return this.httpClient.post(this.baseUrl + this.reportUrl, {reportType: chartType, years: selectedYears, regions: selectedRegions}, httpOptions);
   }
 }

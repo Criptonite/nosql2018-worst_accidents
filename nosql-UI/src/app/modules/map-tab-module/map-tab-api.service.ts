@@ -14,7 +14,7 @@ export class MapTabApiService {
 
   constructor(private httpClient: HttpClient) {
   }
-
+  private baseUrl = '/api';
   private regionListUrl = '/regions';
   private accidentsUrl = '/accidents';
   private typesUrl = '/types';
@@ -22,11 +22,11 @@ export class MapTabApiService {
   private regionYearUrl = '/withRegion';
 
   getAllRegions(): Observable<any> {
-    return this.httpClient.get(this.regionListUrl);
+    return this.httpClient.get(this.baseUrl + this.regionListUrl);
   }
 
   getAllTypes(): Observable<any> {
-    return this.httpClient.get(this.typesUrl);
+    return this.httpClient.get(this.baseUrl + this.typesUrl);
   }
 
   getAccidents(selectedRegion: string, year, accidentType?: string): Observable<any> {
@@ -40,6 +40,6 @@ export class MapTabApiService {
     } else {
       additionalUrl = this.regionYearUrl;
     }
-    return this.httpClient.get(this.accidentsUrl + additionalUrl, {params: queryParams});
+    return this.httpClient.get(this.baseUrl + this.accidentsUrl + additionalUrl, {params: queryParams});
   }
 }

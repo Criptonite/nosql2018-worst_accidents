@@ -41,7 +41,15 @@ export class ChartsComponent  implements OnInit {
   }
 
   chartOptions(title: string) {
+    let additionalOptions;
+    if (this.chartType === 0) {
+      additionalOptions = this.chartService.getOptionsForDeathsByTS();
+    }
+    if (this.chartType === 1) {
+      additionalOptions = this.chartService.getOptionsForDeathsByRegion();
+    }
     return {
+      scales: additionalOptions ? additionalOptions.scales : null,
       title: {
         display: true,
         text: title,

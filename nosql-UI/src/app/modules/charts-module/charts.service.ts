@@ -32,7 +32,10 @@ export class ChartsService {
         fill: false,
         borderColor: '#1E88E5',
         label: 'Deaths by TS count'
-      }]
+      }],
+      options: {
+
+      }
     };
   }
 
@@ -79,6 +82,54 @@ export class ChartsService {
           '#FF6384'
         ]
       }]
+    };
+  }
+
+  getOptionsForDeathsByTS() {
+    return {
+      scales: {
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Deaths in accident'
+          },
+          ticks: {
+            beginAtZero: true,
+          }
+        }],
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'TS count in accident'
+          },
+          ticks: {
+            beginAtZero: true,
+          }
+        }]
+      },
+    };
+  }
+
+  getOptionsForDeathsByRegion() {
+    return {
+      scales: {
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Total deaths in region'
+          }
+        }],
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Region'
+          }
+        }]
+      },
     };
   }
 }

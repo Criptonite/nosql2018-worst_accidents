@@ -21,7 +21,7 @@ export class MapService {
 
   subscribe = async (func) => {
     return this._data.subscribe(func);
-  }
+  };
 
   getDataCoords(data: Accident[]) {
     const coorsArray = [];

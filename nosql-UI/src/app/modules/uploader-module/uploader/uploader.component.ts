@@ -13,6 +13,7 @@ import {UploaderApiService} from '../uploader-api.service';
 export class UploaderComponent implements OnInit {
 
   uploading = false;
+  exporting = false;
 
   constructor(private uploaderApiService: UploaderApiService) { }
 
@@ -92,5 +93,18 @@ export class UploaderComponent implements OnInit {
     uchInfo.state = uchData.S_T;
     uchInfo.role = uchData.K_UCH;
     return uchInfo;
+  }
+
+  getDump() {
+    this.exporting = true;
+    this.uploaderApiService.getDumpLink().subscribe(resp => {
+      const downloadEl = document.createElement('a');
+      downloadEl.setAttribute('href', resp.link);
+      downloadEl.click();
+      this.exporting = false;
+    }, error1 => {
+      this.exporting = false;
+      console.log('Download error', error1);
+    });
   }
 }

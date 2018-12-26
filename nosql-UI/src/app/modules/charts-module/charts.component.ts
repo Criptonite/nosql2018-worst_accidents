@@ -27,8 +27,6 @@ export class ChartsComponent  implements OnInit {
   ngOnInit(): void {
     this.getRegions();
     this.years = [
-      {name: '2014', value: 2014},
-      {name: '2015', value: 2015},
       {name: '2016', value: 2016},
       {name: '2017', value: 2017},
       {name: '2018', value: 2018},
